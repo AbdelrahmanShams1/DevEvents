@@ -18,16 +18,16 @@ interface MongooseCache {
 
 // Extend the global namespace to include mongoose cache
 declare global {
-  var mongoose: MongooseCache | undefined;
+   var mongooseCache: MongooseCache | undefined;
 }
 
 // Initialize the cache object
 // In development, use a global variable to preserve the connection across module reloads (hot reload)
 // In production, the cache is created once per deployment
-let cached: MongooseCache = global.mongoose || { conn: null, promise: null };
+let cached: MongooseCache = global.mongooseCache || { conn: null, promise: null };
 
-if (!global.mongoose) {
-  global.mongoose = cached;
+if (!global.mongooseCache) {
+  global.mongooseCache = cached;
 }
 
 /**
