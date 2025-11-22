@@ -82,3 +82,52 @@ export async function GET(
     );
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: RouteParams ): Promise<NextResponse> {
+  try {
+    await connectDB();
+    const { slug } = await params;
+
+    if (!slug || typeof slug !== 'string' || slug.trim() === '') {
+      return NextResponse.json(
+        { message: 'Invalid or missing slug parameter' },
+        { status: 400 }
+      );
+    }
+    const sanitizedSlug = slug.trim().toLowerCase();
+
+    const deletedEvent = await Event.deleteOne({ _id: sanitizedSlug });
+    if (!deletedEvent) {
+      return NextResponse.json(
+        { message: `Event with slug '${sanitizedSlug}' not found` },
+        { status: 404 }
+      );
+    }
+    return NextResponse.json(
+      { message: 'Event deleted successfully', event: deletedEvent },
+      { status: 200 }
+    );
+  } catch (error) {
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error deleting event by slug:', error);
+    }
+    if (error instanceof Error) {
+      if (error.message.includes('MONGODB_URI')) {
+        return NextResponse.json(
+          { message: 'Database configuration error' },
+          { status: 500 }
+        );
+      }
+      return NextResponse.json(
+        { message: 'Failed to delete event', error: error.message },
+        { status: 500 }
+      );
+    }
+    return NextResponse.json(
+      { message: 'An unexpected error occurred' },
+      { status: 500 }
+    );
+  }
+}
