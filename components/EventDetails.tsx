@@ -92,12 +92,9 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
 
   const bookings = 10;
 
-  const rawSimilarEvents = await getSimilarEventsBySlug(slug);
-  const similarEvents: IEvent[] = rawSimilarEvents.map((event: any) => ({
-    ...event,
-    _id: event._id?.toString?.() ?? event._id,
-  }));
-  console.log("Similar Events:", similarEvents);
+  const similarEvents = (await getSimilarEventsBySlug(
+    slug
+  )) as unknown as IEvent[];
 
   return (
     <section id="event">

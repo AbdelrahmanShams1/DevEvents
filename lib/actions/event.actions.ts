@@ -37,3 +37,28 @@ export const addEvent = async (values: any) => {
         };
     }
 }
+
+export const deleteEventById = async (eventId: string) => {
+    try {
+        await connectDB();
+        await Event.findByIdAndDelete(eventId);
+        return { success: true };
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        return { success: false, error: error instanceof Error ? error.message : 'Failed to delete event' };
+    }
+}
+
+export const updateEventById = async (eventId: string, values: any) => {
+    try {
+        await connectDB();
+        const updatedEvent = await Event.updateOne({ _id: eventId }, values);
+        return { 
+            success: true, 
+            data: JSON.parse(JSON.stringify(updatedEvent)) 
+        };
+    } catch (error) {
+        console.error('Error updating event:', error);
+        return { success: false, error: error instanceof Error ? error.message : 'Failed to update event' };
+    }
+}

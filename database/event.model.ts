@@ -18,6 +18,8 @@ export interface IEvent extends Document {
   tags: string[];
   createdAt: Date | string;
   updatedAt: Date | string;
+  booked?: number;
+  id?: string;
 }
 
 const EventSchema = new Schema<IEvent>(
